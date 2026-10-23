@@ -1,1 +1,574 @@
- Hello tcig !
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNAM Connect - Portail Digital Assuré</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cnam: {
+                            dark: '#0B2545',
+                            primary: '#134074',
+                            light: '#8DA9C4',
+                            accent: '#EE6C4D',
+                            green: '#2E7D32',
+                            bg: '#F1F5F9'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Cairo:wght@600;800&display=swap');
+        * { font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-cnam-bg text-slate-800 min-h-screen flex flex-col justify-center items-center p-2 lg:p-4">
+
+    <!-- APPLICATION CONTAINER -->
+    <div class="w-full max-w-7xl h-[95vh] bg-white rounded-3xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden relative">
+        
+        <!-- HEADER -->
+        <header id="mainHeader" class="bg-cnam-dark text-white px-6 py-3.5 justify-between items-center shadow-md z-10 hidden">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white text-cnam-dark rounded-xl flex items-center justify-center font-black text-xl shadow-md">
+                    CNAM
+                </div>
+                <div>
+                    <h1 class="text-base font-bold leading-tight">CNAM Connect</h1>
+                    <span class="text-[11px] text-blue-200">Centre Tunis</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <div class="bg-blue-900/50 border border-blue-400/30 rounded-2xl px-3.5 py-1.5 flex items-center gap-3">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150" alt="Profile" class="w-9 h-9 rounded-full object-cover border-2 border-emerald-400">
+                    <div class="text-left">
+                        <div class="text-xs font-extrabold text-white">Siwar Mansouri</div>
+                        <div class="text-[10px] text-emerald-300 font-semibold">● Carnet Vert (Remboursement)</div>
+                    </div>
+                </div>
+                <button onclick="logout()" class="bg-red-500/20 hover:bg-red-600 text-red-200 hover:text-white border border-red-500/30 px-3 py-1.5 rounded-xl text-xs font-bold transition">
+                    Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <!-- PAGE D'ACCUEIL / LOGIN -->
+        <div id="viewLogin" class="flex-1 bg-gradient-to-br from-cnam-dark via-cnam-primary to-slate-900 flex items-center justify-center p-6">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-8 max-w-md w-full shadow-2xl border border-white/20 text-center">
+                <div class="w-20 h-20 bg-cnam-primary text-white rounded-2xl flex items-center justify-center font-black text-3xl mx-auto mb-4 shadow-xl border-4 border-blue-100">
+                    CNAM
+                </div>
+                <h2 class="text-2xl font-black text-cnam-dark">CNAM Connect</h2>
+                <p class="text-xs text-slate-500 mb-6">الصندوق الوطني للتأمين على المرض - بوابة الخدمات</p>
+
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Matricule CNAM (المعرف الوحيد):</label>
+                        <input type="text" id="loginMatricule" value="12345678-01" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-center font-bold text-slate-800 outline-none focus:border-cnam-primary">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">N° CIN / Pass (كلمة السر):</label>
+                        <input type="password" id="loginCIN" value="09876543" class="w-full px-4 py-3 rounded-xl border-2 border-slate-200 text-center font-bold text-slate-800 outline-none focus:border-cnam-primary">
+                    </div>
+
+                    <button onclick="login()" class="w-full bg-cnam-primary hover:bg-blue-900 text-white font-bold py-3.5 rounded-xl text-sm shadow-lg transition">
+                        Se Connecter / دخول
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP WORKSPACE -->
+        <div id="appBody" class="hidden flex-1 flex overflow-hidden">
+            
+            <!-- SIDEBAR -->
+            <aside class="w-64 bg-slate-900 text-slate-300 p-4 flex flex-col justify-between select-none">
+                <div class="space-y-4">
+                    <div class="text-[10px] font-black tracking-widest text-slate-400 uppercase px-3">Menu Principal</div>
+                    
+                    <nav class="space-y-1">
+                        <button onclick="switchTab('tabDashboard', this)" class="nav-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs transition-all bg-cnam-primary text-white shadow-md">
+                            <span class="text-base">📊</span>
+                            <span>Tableau de Bord</span>
+                        </button>
+
+                        <div class="text-[10px] font-black tracking-widest text-slate-400 uppercase px-3 pt-3">Services Famille</div>
+                        
+                        <button onclick="switchTab('tabFirstCarnet', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">🆕</span>
+                            <span>Créer Carnet (أول مرة)</span>
+                        </button>
+
+                        <button onclick="switchTab('tabBeneficiaries', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">👨‍👩‍👧</span>
+                            <span>Ajouter Ayant Droit</span>
+                        </button>
+
+                        <div class="text-[10px] font-black tracking-widest text-slate-400 uppercase px-3 pt-3">Dossiers & Soins</div>
+
+                        <button onclick="switchTab('tabRemboursement', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">💰</span>
+                            <span>Remboursements (BS)</span>
+                        </button>
+
+                        <button onclick="switchTab('tabPriseEnCharge', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">🏥</span>
+                            <span>Prises en Charge</span>
+                        </button>
+
+                        <button onclick="switchTab('tabDoctors', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">🩺</span>
+                            <span>Guide Médical</span>
+                        </button>
+
+                        <button onclick="switchTab('tabCard', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">💳</span>
+                            <span>Carte LABESS QR</span>
+                        </button>
+
+                        <button onclick="switchTab('tabMessages', this)" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-300 hover:bg-slate-800 transition-all">
+                            <span class="text-base">💬</span>
+                            <span>المراسلات والإشعارات</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <div class="bg-slate-800/80 border border-slate-700/60 p-3 rounded-2xl text-xs space-y-1">
+                    <div class="flex items-center gap-1.5 text-amber-400 font-bold text-[11px]">
+                        <span>📍</span> Centre CNAM Tunis
+                    </div>
+                    <p class="text-[10px] text-slate-400">Assurée: Siwar Mansouri</p>
+                </div>
+            </aside>
+
+            <!-- MAIN WORKSPACE -->
+            <main class="flex-1 bg-slate-100/70 p-6 overflow-y-auto custom-scrollbar">
+                
+                <!-- 1. DASHBOARD -->
+                <div id="tabDashboard" class="tab-content block space-y-6">
+                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <div>
+                            <h2 class="text-lg font-bold text-cnam-dark">Bienvenue, Siwar Mansouri 👋</h2>
+                            <p class="text-xs text-slate-500">Aperçu général de votre compte et état de vos remboursements</p>
+                        </div>
+                        <button onclick="openBSModal()" class="bg-cnam-accent hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center gap-2">
+                            <span>+</span> Soumettre un BS
+                        </button>
+                    </div>
+
+                    <!-- CARDS STATS -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="bg-gradient-to-br from-emerald-600 to-teal-800 text-white p-5 rounded-2xl shadow-lg flex flex-col justify-between">
+                            <div>
+                                <span class="text-xs font-medium text-emerald-100">Plafond Annuel (السقف السنوي)</span>
+                                <div class="text-2xl font-black mt-1">180 DT Restants</div>
+                            </div>
+                            <div class="mt-4">
+                                <div class="flex justify-between text-[11px] font-bold mb-1 text-emerald-100">
+                                    <span>Consommé: 120 DT</span>
+                                    <span>Max: 300 DT</span>
+                                </div>
+                                <div class="w-full bg-emerald-950/40 h-2.5 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-300 h-full w-[40%] rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 text-cnam-primary rounded-xl flex items-center justify-center font-bold text-lg">💳</div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-xs">Carte LABESS Digitale</h3>
+                                    <p class="text-[11px] text-slate-500">Carnet Vert Actif</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-emerald-600 bg-emerald-50 p-2 rounded-xl mt-3 text-center border border-emerald-200">
+                                ✅ Droits ouverts pour 2026
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold text-lg">🏛️</div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-xs">Centre d'Affiliation</h3>
+                                    <p class="text-[11px] text-slate-500">Centre CNAM Tunis</p>
+                                </div>
+                            </div>
+                            <div class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-xl mt-3 border border-slate-200 text-center font-semibold">
+                                Matricule: 12345678-01
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DERNIIERS DOSSIERS -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Derniers Dossiers Traités</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200/60">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-xs">✓</div>
+                                    <div>
+                                        <div class="font-bold text-xs text-slate-800">Bulletin de Soin #45821</div>
+                                        <div class="text-[11px] text-slate-500">Consultation Généraliste</div>
+                                    </div>
+                                </div>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Remboursé (45 DT)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CRÉATION CARNET -->
+                <div id="tabFirstCarnet" class="tab-content hidden space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-base font-bold text-cnam-dark">Création de Carnet de Soin - Première Inscription (أول مرة)</h2>
+                        <p class="text-xs text-slate-500">خاص بالسيدة: Siwar Mansouri - استخراج دفتر علاج لأول مرة واستكمال الوثائق</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Régime d'affiliation (النظام الاجتماعي):</label>
+                                <select class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-cnam-primary">
+                                    <option>CNSS - Salarié Secteur Privé</option>
+                                    <option>CNRPS - Fonction Publique</option>
+                                    <option>CNSS - Travailleur Non Salarié</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Filière médicale choisie (منظومة العلاج):</label>
+                                <select class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-cnam-primary">
+                                    <option>Filière Privée - Carnet Vert (استرجاع مصاريف)</option>
+                                    <option>Filière Médecin de Famille (طبيب العائلة)</option>
+                                    <option>Filière Publique - Carnet Bleu (المستشفيات)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Numéro CIN (رقم بطاقة التعريف):</label>
+                                <input type="text" value="09876543" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:border-cnam-primary">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">RIB Bancaire / Postal (الحساب البنكي):</label>
+                                <input type="text" placeholder="20 chiffres RIB" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:border-cnam-primary">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Joindre Attestation d'emploi / CIN (تحميل الوثائق):</label>
+                                <input type="file" class="w-full text-xs text-slate-500 bg-slate-50 border border-slate-300 rounded-xl p-2 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <button onclick="alert('Demande de création de carnet transmise avec succès au centre CNAM !')" class="bg-cnam-primary hover:bg-blue-900 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow">
+                            Envoyer la demande d'inscription (إرسال المطلب)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. AJOUTER AYANT DROIT -->
+                <div id="tabBeneficiaries" class="tab-content hidden space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-base font-bold text-cnam-dark">Ajouter un Ayant Droit (إضافة أفراد العائلة)</h2>
+                        <p class="text-xs text-slate-500">إضافة الأبناء أو القرين على كفالة الحساب الخاص بالسيدة Siwar Mansouri</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Lien de parenté (الصفة):</label>
+                                <select class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-cnam-primary">
+                                    <option>Enfant (طفل)</option>
+                                    <option>Conjoint non travaillant (قرين لا يعمل)</option>
+                                    <option>Ascendant à charge (والد/والدة)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Nom et Prénom (الاسم واللقب):</label>
+                                <input type="text" id="benName" placeholder="Ex: Youssef Mansouri" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:border-cnam-primary">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Date de Naissance (تاريخ الولادة):</label>
+                                <input type="date" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:border-cnam-primary">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Extrait d'état civil (مضمون ولادة):</label>
+                                <input type="file" class="w-full text-xs text-slate-500 bg-slate-50 border border-slate-300 rounded-xl p-2 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <button onclick="addBeneficiaryAction()" class="bg-cnam-green hover:bg-green-800 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow">
+                            Valider et Ajouter (تأكيد الإضافة)
+                        </button>
+                    </div>
+
+                    <!-- CERTIFICAT PROVISOIRE CARD -->
+                    <div id="certifContainer" class="hidden bg-emerald-50 border-2 border-emerald-300 p-6 rounded-2xl text-center space-y-3">
+                        <div class="text-2xl font-bold text-emerald-900">📄 Attestation d'affiliation Provisoire</div>
+                        <p class="text-xs text-emerald-800">تم إضافة العضو بنجاح. يمكنك طباعة الشهادة الوقتية لاستعمالها لدى الطبيب فورا.</p>
+                        <div class="p-3 bg-white max-w-xs mx-auto rounded-xl border font-bold text-slate-800 text-xs shadow-sm">
+                            Assurée: Siwar Mansouri<br>
+                            Bénéficiaire: <span id="certifBenName">Youssef Mansouri</span>
+                        </div>
+                        <button onclick="window.print()" class="bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow">
+                            🖨️ Imprimer l'attestation (طباعة الشهادة)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. REMBOURSEMENT -->
+                <div id="tabRemboursement" class="tab-content hidden space-y-5">
+                    <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-base font-bold text-cnam-dark">Suivi des Remboursements (Bulletins de Soin)</h2>
+                        <button onclick="openBSModal()" class="bg-cnam-accent text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow">+ Nouveaux BS</button>
+                    </div>
+
+                    <div id="bsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-emerald-600 border border-slate-200">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm">BS #45821 - Siwar Mansouri</h3>
+                                    <p class="text-xs text-slate-500">Consultation Généraliste</p>
+                                </div>
+                                <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">Remboursé (45 DT)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. PRISES EN CHARGE (معبأة ومجهزة) -->
+                <div id="tabPriseEnCharge" class="tab-content hidden space-y-5">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-base font-bold text-cnam-dark">Demandes de Prise en Charge (الموافقات المسبقة)</h2>
+                        <p class="text-xs text-slate-500">متابعة قرارات الموافقة للعمليات الجراحية وصور الأشعة</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-blue-600 border border-slate-200 space-y-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm">Demande IRM / Scanner</h3>
+                                    <p class="text-xs text-slate-500">N° Dossier: PC-2026-889</p>
+                                </div>
+                                <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2.5 py-1 rounded-full">Accordé (موافقة) ✅</span>
+                            </div>
+                            <div class="text-xs text-slate-600">Établissement: Clinique L'Espoir - Tunis</div>
+                            <div class="text-xs text-blue-700 font-bold bg-blue-50 p-2 rounded-lg">
+                                📅 Valable jusqu'au: 30 Novembre 2026
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-amber-500 border border-slate-200 space-y-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-sm">Intervention Chirurgicale</h3>
+                                    <p class="text-xs text-slate-500">N° Dossier: PC-2026-912</p>
+                                </div>
+                                <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">Contرôle Médical</span>
+                            </div>
+                            <div class="text-xs text-slate-600">Établissement: Hôpital La Rabta</div>
+                            <div class="text-xs text-slate-500 bg-slate-50 p-2 rounded-lg">
+                                🕒 قيد دراسة الملف الطبي من طرف طبيب الرقابة بالكنام.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. DOCTORS -->
+                <div id="tabDoctors" class="tab-content hidden space-y-5">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+                        <h2 class="text-base font-bold text-cnam-dark">Guide des Médecins Conventionnés</h2>
+                        <input type="text" id="docSearch" onkeyup="filterDocs()" placeholder="🔍 Chercher..." class="px-4 py-2 rounded-xl border border-slate-300 text-xs outline-none">
+                    </div>
+                    <div class="space-y-3" id="docsList">
+                        <div class="doc-item bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-xs">Dr. Hédi Tounsi</h3>
+                                <p class="text-[11px] text-slate-500">📍 Tunis</p>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full">Conventionné</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. DIGITAL CARD -->
+                <div id="tabCard" class="tab-content hidden space-y-5 text-center">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 max-w-md mx-auto">
+                        <h2 class="text-base font-bold text-cnam-dark mb-1">Carte Digital LABESS</h2>
+                        <div class="bg-slate-50 border-2 border-dashed border-cnam-primary rounded-2xl p-6 mt-4">
+                            <div class="text-6xl mb-3">🔳</div>
+                            <div class="font-black text-slate-800 text-base">Siwar Mansouri</div>
+                            <div class="text-xs text-slate-500 mt-1">Matricule: 12345678-01</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. MESSAGES (معبأة بالكامل مع شات تفاعلي) -->
+                <div id="tabMessages" class="tab-content hidden space-y-5">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 class="text-base font-bold text-cnam-dark">المراسلات والإشعارات الرسمية (Support & Notifications)</h2>
+                        <p class="text-xs text-slate-500">مركز التواصل المباشر والإشعارات مع أعوان الكنام</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <div class="space-y-3">
+                            <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-bold text-xs text-amber-900">⚠️ تنبيه تجديد الدفتر</span>
+                                    <span class="text-[10px] text-amber-700">اليوم</span>
+                                </div>
+                                <p class="text-xs text-amber-800 leading-relaxed">دفتر العلاج ينتهي قريباً. يمكنك تجديده مباشرة أونلاين.</p>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-3.5 rounded-2xl">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="font-bold text-xs text-blue-900">✅ قرار موافقة IRM</span>
+                                    <span class="text-[10px] text-blue-700">أمس</span>
+                                </div>
+                                <p class="text-xs text-blue-800 leading-relaxed">تمت الموافقة على مطلب الأشعة بالمصحة. رقم الملف: PC-2026-889.</p>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-4 flex flex-col justify-between min-h-[320px]">
+                            <div id="chatBox" class="space-y-3 overflow-y-auto max-h-[240px] p-2 custom-scrollbar">
+                                <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl max-w-[80%] text-xs font-semibold leading-relaxed">
+                                    مرحباً بكِ سوار في خدمة المراسلات المباشرة لمركز الكنام. كيف يمكننا مساعدتكِ اليوم؟
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 pt-3 border-t">
+                                <input type="text" id="chatInput" placeholder="Posez votre question ici / اكتب سؤالك هنا..." class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:border-cnam-primary bg-white">
+                                <button onclick="sendMsg()" class="bg-cnam-primary hover:bg-blue-900 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition">
+                                    إرسال
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL BS -->
+    <div id="modalBS" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4">
+            <h3 class="font-bold text-base text-cnam-dark">Déposer un Bulletin de Soin (BS)</h3>
+            <input type="text" id="formBsNum" placeholder="Numéro BS (Ex: 46001)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs">
+            <input type="text" id="formDoctor" placeholder="Nom du médecin" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs">
+            <input type="number" id="formAmount" placeholder="Montant (DT)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs">
+            <div class="flex gap-2">
+                <button onclick="submitBSForm()" class="flex-1 bg-cnam-accent text-white font-bold py-2.5 rounded-xl text-xs">Envoyer</button>
+                <button onclick="closeBSModal()" class="bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        function login() {
+            document.getElementById('viewLogin').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('mainHeader').classList.add('flex');
+            document.getElementById('appBody').classList.remove('hidden');
+            document.getElementById('appBody').classList.add('flex');
+        }
+
+        function logout() {
+            document.getElementById('appBody').classList.add('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
+            document.getElementById('viewLogin').classList.remove('hidden');
+        }
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('bg-cnam-primary', 'text-white', 'shadow-md');
+                b.classList.add('text-slate-300');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            if(btnElement) {
+                btnElement.classList.add('bg-cnam-primary', 'text-white', 'shadow-md');
+                btnElement.classList.remove('text-slate-300');
+            }
+        }
+
+        function openBSModal() { document.getElementById('modalBS').classList.remove('hidden'); }
+        function closeBSModal() { document.getElementById('modalBS').classList.add('hidden'); }
+
+        function submitBSForm() {
+            const num = document.getElementById('formBsNum').value;
+            const doc = document.getElementById('formDoctor').value;
+            const amount = document.getElementById('formAmount').value;
+
+            if(!num || !doc || !amount) { alert("Veuillez remplir tous les champs."); return; }
+
+            const container = document.getElementById('bsContainer');
+            container.innerHTML = `
+                <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-amber-500 border border-slate-200">
+                    <h3 class="font-bold text-sm">BS #${num} - Siwar Mansouri</h3>
+                    <p class="text-xs text-slate-500">${doc} (${amount} DT) - En cours</p>
+                </div>
+            ` + container.innerHTML;
+            closeBSModal();
+            alert("Bulletin de soin déposé avec succès !");
+        }
+
+        function addBeneficiaryAction() {
+            const name = document.getElementById('benName').value.trim();
+            if(!name) { alert("Veuillez saisir le nom et prénom."); return; }
+            document.getElementById('certifBenName').innerText = name;
+            document.getElementById('certifContainer').classList.remove('hidden');
+            alert("Bénéficiaire ajouté avec succès !");
+        }
+
+        function sendMsg() {
+            const input = document.getElementById('chatInput');
+            const chatBox = document.getElementById('chatBox');
+            const txt = input.value.trim();
+
+            if(!txt) return;
+
+            chatBox.innerHTML += `
+                <div class="bg-cnam-primary text-white p-3 rounded-2xl max-w-[80%] text-xs font-semibold leading-relaxed ml-auto text-right">
+                    ${txt}
+                </div>
+            `;
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            setTimeout(() => {
+                chatBox.innerHTML += `
+                    <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl max-w-[80%] text-xs font-semibold leading-relaxed">
+                        شكراً على رسالتكِ سوار. سيقوم أحد أعوان مركز الكنام بالإجابة في أقرب وقت.
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        }
+
+        function filterDocs() {
+            const q = document.getElementById('docSearch').value.toLowerCase();
+            document.querySelectorAll('.doc-item').forEach(i => {
+                i.style.display = i.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>
